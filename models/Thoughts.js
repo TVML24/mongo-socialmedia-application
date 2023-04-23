@@ -1,25 +1,29 @@
 const { Schema, model } = require('mongoose');
+const  ObjectID = require('mongodb').ObjectId;
 
 // Schema to create Post model
 const thoughtSchema = new Schema(
   {
-    published: {
-      type: Boolean,
-      default: false,
+    thoughtText: {
+      type: String,
+      required: true,
+      minLength: 1,
+      maxLength: 280,
     },
     createdAt: {
       type: Date,
       default: Date.now,
     },
-    meta: {
-      upvotes: Number,
-      bookmarks: Number,
-    },
-    text: {
+    username: {
       type: String,
-      minLength: 15,
-      maxLength: 500,
+      required: true,
     },
+    reactions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'reactions',
+      },
+    ],
   },
   {
     toJSON: {
@@ -29,12 +33,11 @@ const thoughtSchema = new Schema(
   }
 );
 
-// Create a virtual property `upvoteCount` that gets the amount of comments per user
 thoughtSchema
-  .virtual('upvoteCount')
+  .virtual('reactionCount')
   // Getter
   .get(function () {
-    return this.meta.upvotes;
+    return this.reactions.length;
   });
 
 // Initialize our Post model

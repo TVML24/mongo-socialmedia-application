@@ -37,4 +37,22 @@ module.exports = {
         res.status(500).json(err);
       });
   },
+  deleteSingleThought(req, res) {
+    Thought.findOneAndDelete({ _id: req.params.thoughtId })
+    .then((thought) =>
+        !thought
+          ? res.status(404).json({ message: 'No thought with that ID' })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  updateSingleThought(req, res) {
+    Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { username: req.body[0].username, thoughtText: req.body[0].thoughtText}, { new: true })
+    .then((thought) =>
+    !thought
+      ? res.status(404).json({ message: 'No thought with that ID' })
+      : res.json(thought)
+  )
+  .catch((err) => res.status(500).json(err));
+  }
 };

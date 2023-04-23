@@ -1,15 +1,38 @@
 const { Schema, model } = require('mongoose');
+const  ObjectID = require('mongodb').ObjectId;
 
+
+// string unique required trimmed
 // Schema to create User model
 const userSchema = new Schema(
   {
-    first: String,
-    last: String,
-    age: Number,
+    username:  {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Email required"],
+      unique: true,
+      validate: {
+        validator: function(v) {
+            return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+        },
+        message: "Please enter a valid email"
+    },
+    },
     thoughts: [
       {
         type: Schema.Types.ObjectId,
         ref: 'thoughts',
+      },
+    ],
+    friends: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'friends',
       },
     ],
   },
@@ -24,18 +47,6 @@ const userSchema = new Schema(
 );
 
 // Create a virtual property `fullName` that gets and sets the user's full name
-userSchema
-  .virtual('fullName')
-  // Getter
-  .get(function () {
-    return `${this.first} ${this.last}`;
-  })
-  // Setter to set the first and last name
-  .set(function (v) {
-    const first = v.split(' ')[0];
-    const last = v.split(' ')[1];
-    this.set({ first, last });
-  });
 
 // Initialize our User model
 const User = model('user', userSchema);
