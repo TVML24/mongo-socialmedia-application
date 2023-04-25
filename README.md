@@ -24,7 +24,7 @@ Use NPM start to start the server.
 
 After the user has used the command npm start from the integrated terminal the server will start. 
 From this point the user can make Get, Post, Put, and Delete calls to the database concerning categories/products or tags by using the appropriate route using Insomnia.
-e.g. Localhost:3001/Categories/3.
+e.g. Localhost:3001/API/users/
 When a valid request is made using JSON the application will update the database.
 
 ## Deployment
