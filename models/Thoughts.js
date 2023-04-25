@@ -1,6 +1,10 @@
 const { Schema, model } = require('mongoose');
 const  ObjectID = require('mongodb').ObjectId;
 const Reaction = require('./Reaction');
+const dayjs = require('dayjs');
+var advancedFormat = require('dayjs/plugin/advancedFormat');
+dayjs.extend(advancedFormat);
+
 
 // Schema to create Post model
 const thoughtSchema = new Schema(
@@ -14,6 +18,7 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      get: formatDate,
     },
     username: {
       type: String,
@@ -24,6 +29,7 @@ const thoughtSchema = new Schema(
   {
     toJSON: {
       virtuals: true,
+      getters: true,
     },
     id: false,
   }
@@ -35,6 +41,11 @@ thoughtSchema
   .get(function () {
     return this.reactions.length;
   });
+
+function formatDate(date) {
+  let newDate = dayjs(date);
+  return newDate.format('MMM Do YYYY [at] h:MM A');
+}
 
 // Initialize our Post model
 const Thought = model('Thought', thoughtSchema);
